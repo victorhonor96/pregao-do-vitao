@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import itertools
 import io
+import importlib
 
 st.set_page_config(page_title="Comparador de Preços", layout="wide")
 
@@ -13,11 +14,11 @@ lista_file = st.sidebar.file_uploader("Lista de compra (CSV)", type="csv")
 precos_file = st.sidebar.file_uploader("Banco de preços (CSV)", type="csv")
 frete_file = st.sidebar.file_uploader("Fretes (CSV)", type="csv")
 
-# Estado (ESSENCIAL)
+# Estado
 if "resultado" not in st.session_state:
     st.session_state["resultado"] = None
 
-# Função de otimização
+# Função
 def melhor_combinacao(lista, precos, fretes):
     lojas = precos["loja"].unique()
     melhor_total = float("inf")
@@ -45,8 +46,8 @@ def melhor_combinacao(lista, precos, fretes):
                     break
 
                 melhor = dados_item.loc[dados_item["preco"].idxmin()]
-
                 subtotal = melhor["preco"] * qtd
+
                 total += subtotal
                 lojas_usadas.add(melhor["loja"])
 
@@ -58,7 +59,6 @@ def melhor_combinacao(lista, precos, fretes):
                     "Subtotal": subtotal
                 })
 
-            # somar fretes
             for loja in lojas_usadas:
                 total += fretes.get(loja, 0)
 
@@ -87,11 +87,9 @@ if lista_file and precos_file and frete_file:
     st.subheader("🚚 Fretes")
     st.dataframe(fretes_df)
 
-    # Botão calcula e salva no estado
     if st.button("🧠 Calcular melhor combinação"):
         st.session_state["resultado"] = melhor_combinacao(lista, precos, fretes)
 
-    # Se já existe resultado → mostra
     if st.session_state["resultado"] is not None:
         lojas, total, detalhe_df = st.session_state["resultado"]
 
@@ -103,25 +101,42 @@ if lista_file and precos_file and frete_file:
 
         st.success(f"💰 Custo total otimizado: R$ {total:,.2f}")
 
-        # Excel por loja
-        output = io.BytesIO()
+        # escolher engine disponível
+        if importlib.util.find_spec("xlsxwriter"):
+            engine = "xlsxwriter"
+        elif importlib.util.find_spec("openpyxl"):
+            engine = "openpyxl"
+        else:
+            st.error("Nenhum engine de Excel disponível.")
+            st.stop()
 
-        with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
-            for loja in detalhe_df["Loja"].unique():
-                df_loja = detalhe_df[detalhe_df["Loja"] == loja].copy()
+        # Gerar CSV separado por loja
+        output = io.StringIO()
 
-                total_loja = df_loja["Subtotal"].sum()
-                df_loja.loc["TOTAL"] = ["", "", "", "", total_loja]
+        for loja in detalhe_df["Loja"].unique():
+            df_loja = detalhe_df[detalhe_df["Loja"] == loja].copy()
 
-                df_loja.to_excel(writer, sheet_name=loja, index=False)
+            total_loja = df_loja["Subtotal"].sum()
 
-        output.seek(0)
+            # título da loja
+            output.write(f"=== {loja} ===\n")
+
+            # dados
+            df_loja.to_csv(output, index=False)
+
+            # total da loja
+            output.write(f"TOTAL,,,,{total_loja}\n")
+
+            # linha em branco
+            output.write("\n\n")
+
+        csv_data = output.getvalue().encode("utf-8")
 
         st.download_button(
-            "📥 Baixar resultado por loja (Excel)",
-            data=output,
-            file_name="resultado_por_loja.xlsx",
-            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            "📥 Baixar resultado por loja (CSV)",
+            data=csv_data,
+            file_name="resultado_por_loja.csv",
+            mime="text/csv"
         )
 
 else:
