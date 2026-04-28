@@ -1,0 +1,60 @@
+item,loja,preco
+bloco_concreto_L_14x34x19,Loja A,4.20
+bloco_concreto_L_14x34x19,Loja B,4.50
+bloco_concreto_L_14x34x19,Loja C,3.95
+bloco_concreto_L_14x34x19,Loja D,4.10
+bloco_concreto_L_14x34x19,Loja E,4.30
+
+bloco_concreto_T_14x54x19,Loja A,6.10
+bloco_concreto_T_14x54x19,Loja B,5.90
+bloco_concreto_T_14x54x19,Loja C,6.30
+bloco_concreto_T_14x54x19,Loja D,6.00
+bloco_concreto_T_14x54x19,Loja E,5.85
+
+bloco_canaleta_14x39x19,Loja A,5.00
+bloco_canaleta_14x39x19,Loja B,4.80
+bloco_canaleta_14x39x19,Loja C,5.20
+bloco_canaleta_14x39x19,Loja D,4.95
+bloco_canaleta_14x39x19,Loja E,5.10
+
+cimento_50kg,Loja A,38.00
+cimento_50kg,Loja B,36.50
+cimento_50kg,Loja C,39.20
+cimento_50kg,Loja D,37.80
+cimento_50kg,Loja E,36.90
+
+areia_m3,Loja A,120.00
+areia_m3,Loja B,115.00
+areia_m3,Loja C,130.00
+areia_m3,Loja D,118.00
+areia_m3,Loja E,122.00
+
+brita_m3,Loja A,140.00
+brita_m3,Loja B,135.00
+brita_m3,Loja C,145.00
+brita_m3,Loja D,138.00
+brita_m3,Loja E,142.00
+
+aco_ca50_10mm,Loja A,52.00
+aco_ca50_10mm,Loja B,50.50
+aco_ca50_10mm,Loja C,53.00
+aco_ca50_10mm,Loja D,51.80
+aco_ca50_10mm,Loja E,50.90
+
+tijolo_ceramico_6furos,Loja A,0.85
+tijolo_ceramico_6furos,Loja B,0.80
+tijolo_ceramico_6furos,Loja C,0.90
+tijolo_ceramico_6furos,Loja D,0.82
+tijolo_ceramico_6furos,Loja E,0.88
+
+argamassa_20kg,Loja A,22.00
+argamassa_20kg,Loja B,21.50
+argamassa_20kg,Loja C,23.00
+argamassa_20kg,Loja D,22.30
+argamassa_20kg,Loja E,21.80
+
+cal_hidratada_20kg,Loja A,18.00
+cal_hidratada_20kg,Loja B,17.20
+cal_hidratada_20kg,Loja C,18.50
+cal_hidratada_20kg,Loja D,17.80
+cal_hidratada_20kg,Loja E,17.50
