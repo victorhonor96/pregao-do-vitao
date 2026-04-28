@@ -2,7 +2,6 @@ import streamlit as st
 import pandas as pd
 import itertools
 import io
-import importlib
 
 st.set_page_config(page_title="Comparador de Preços", layout="wide")
 
@@ -101,43 +100,25 @@ if lista_file and precos_file and frete_file:
 
         st.success(f"💰 Custo total otimizado: R$ {total:,.2f}")
 
-        # escolher engine disponível
-        if importlib.util.find_spec("xlsxwriter"):
-            engine = "xlsxwriter"
-        elif importlib.util.find_spec("openpyxl"):
-            engine = "openpyxl"
-        else:
-            st.error("Nenhum engine de Excel disponível.")
-            st.stop()
-
-        # Gerar CSV separado por loja
         output = io.StringIO()
 
-        for loja in detalhe_df["Loja"].unique():
-            df_loja = detalhe_df[detalhe_df["Loja"] == loja].copy()
+    for loja in detalhe_df["Loja"].unique():
+        df_loja = detalhe_df[detalhe_df["Loja"] == loja].copy()
+        total_loja = df_loja["Subtotal"].sum()
 
-            total_loja = df_loja["Subtotal"].sum()
+        output.write(f"=== {loja} ===\n")
+        df_loja.to_csv(output, index=False, sep=";")
 
-            # título da loja
-            output.write(f"=== {loja} ===\n")
+        output.write(f"TOTAL;;;;{total_loja}\n\n")
 
-            # dados
-            df_loja.to_csv(output, index=False)
+    csv_data = output.getvalue().encode("utf-8-sig")
 
-            # total da loja
-            output.write(f"TOTAL,,,,{total_loja}\n")
-
-            # linha em branco
-            output.write("\n\n")
-
-        csv_data = output.getvalue().encode("utf-8")
-
-        st.download_button(
-            "📥 Baixar resultado por loja (CSV)",
-            data=csv_data,
-            file_name="resultado_por_loja.csv",
-            mime="text/csv"
-        )
+    st.download_button(
+        "📥 Baixar resultado por loja (CSV)",
+        data=csv_data,
+        file_name="resultado_por_loja.csv",
+        mime="text/csv"
+    )
 
 else:
     st.info("⬅️ Faça upload dos três arquivos CSV para começar")
