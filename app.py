@@ -89,36 +89,36 @@ if lista_file and precos_file and frete_file:
     if st.button("🧠 Calcular melhor combinação"):
         st.session_state["resultado"] = melhor_combinacao(lista, precos, fretes)
 
-    if st.session_state["resultado"] is not None:
-        lojas, total, detalhe_df = st.session_state["resultado"]
+        if st.session_state["resultado"] is not None:
+            lojas, total, detalhe_df = st.session_state["resultado"]
 
-        st.subheader("🏆 Melhor combinação de lojas")
-        st.write(lojas)
+            st.subheader("🏆 Melhor combinação de lojas")
+            st.write(lojas)
 
-        st.subheader("📊 Detalhamento da compra")
-        st.dataframe(detalhe_df)
+            st.subheader("📊 Detalhamento da compra")
+            st.dataframe(detalhe_df)
 
-        st.success(f"💰 Custo total otimizado: R$ {total:,.2f}")
+            st.success(f"💰 Custo total otimizado: R$ {total:,.2f}")
 
-        output = io.StringIO()
+            output = io.StringIO()
 
-    for loja in detalhe_df["Loja"].unique():
-        df_loja = detalhe_df[detalhe_df["Loja"] == loja].copy()
-        total_loja = df_loja["Subtotal"].sum()
+        for loja in detalhe_df["Loja"].unique():
+            df_loja = detalhe_df[detalhe_df["Loja"] == loja].copy()
+            total_loja = df_loja["Subtotal"].sum()
 
-        output.write(f"=== {loja} ===\n")
-        df_loja.to_csv(output, index=False, sep=";")
+            output.write(f"=== {loja} ===\n")
+            df_loja.to_csv(output, index=False, sep=";")
 
-        output.write(f"TOTAL;;;;{total_loja}\n\n")
+            output.write(f"TOTAL;;;;{total_loja}\n\n")
 
-    csv_data = output.getvalue().encode("utf-8-sig")
+        csv_data = output.getvalue().encode("utf-8-sig")
 
-    st.download_button(
-        "📥 Baixar resultado por loja (CSV)",
-        data=csv_data,
-        file_name="resultado_por_loja.csv",
-        mime="text/csv"
-    )
+        st.download_button(
+            "📥 Baixar resultado por loja (CSV)",
+            data=csv_data,
+            file_name="resultado_por_loja.csv",
+            mime="text/csv"
+        )
 
 else:
     st.info("⬅️ Faça upload dos três arquivos CSV para começar")
